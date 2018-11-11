@@ -45,10 +45,22 @@ describe Roust do
                   :body    => mocks_path.join('ticket-create.txt').read,
                   :headers => {})
 
+    stub_request(:post, "http://rt.example.org/REST/1.0/ticket/new")
+       .with(:body => "content=id%3A%20ticket%2Fnew%0ASubject%3A%20umlaut%20ticket%20%C3%9C%0AQueue%3A%20verkaufen")
+       .to_return(:status => 200,
+                  :body    => mocks_path.join('ticket-create-umlauts.txt').read,
+                  :headers => {})
+
     stub_request(:get, 'http://rt.example.org/REST/1.0/ticket/99/show')
       .to_return(:status  => 200,
                  :body    => mocks_path.join('ticket-99-show.txt').read,
                  :headers => {})
+
+    stub_request(:get, 'http://rt.example.org/REST/1.0/ticket/102/show')
+      .to_return(:status  => 200,
+                 :body    => mocks_path.join('ticket-102-show.txt').read,
+                 :headers => {})
+
 
     stub_request(:post, "http://rt.example.org/REST/1.0/ticket/100/edit")
       .with { |request|
@@ -204,15 +216,36 @@ describe Roust do
       end
     end
 
-    it 'can create tickets' do
-      attrs = {
-        'Subject' => 'test ticket',
-        'Queue'   => 'sales',
-      }
-      ticket = @rt.ticket_create(attrs)
+    describe 'ticket_create' do
+      it 'can create tickets' do
+        attrs = {
+          'Subject' => 'test ticket',
+          'Queue'   => 'sales',
+        }
+        ticket = @rt.ticket_create(attrs)
 
-      attrs.each do |k, v|
-        expect(ticket[k]).to eq(v)
+        attrs.each do |k, v|
+          expect(ticket[k]).to eq(v)
+        end
+      end
+
+      context 'when subject contains an umlaut' do
+        subject(:ticket) { @rt.ticket_create(attrs) }
+        let(:attrs) do
+          { 'Subject' => 'umlaut ticket Ü', 'Queue' => 'verkaufen' }
+        end
+
+        it 'creates the ticket' do
+          attrs.each do |k, v|
+            expect(ticket[k]).to eq(v)
+          end
+        end
+
+        it 'returns information about the created ticket' do
+          expect(ticket['id']).to eq("102")
+          expect(ticket['Subject']).to be
+          expect(ticket['Requestors']).to include('user@example.org')
+        end
       end
     end
 

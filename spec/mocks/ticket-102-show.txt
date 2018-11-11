@@ -1,0 +1,25 @@
+RT/3.4.6 200 Ok
+
+id: ticket/102
+Queue: verkaufen
+Owner: Nobody
+Subject: umlaut ticket Ü
+Status: new
+Priority: 0
+InitialPriority: 0
+FinalPriority: 0
+Requestors: user@example.org
+Cc:
+AdminCc:
+Created: Sat Nov 10 17:40:14 2018
+Starts: Not set
+Started: Not set
+Due: Not set
+Resolved: Not set
+Told: Not set
+LastUpdated: Sat Nov 10 17:40:15 2018
+TimeEstimated: 0
+TimeWorked: 0
+TimeLeft: 0
+CF.{Tags}:
+CF.{URL}:
