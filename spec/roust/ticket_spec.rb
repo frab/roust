@@ -169,7 +169,7 @@ describe Roust do
       end
     end
 
-    it 'can fetch transactions on individual tickets' do
+    it 'can fetch short transactions on individual tickets' do
       short = @rt.history('1', :format => 'short')
 
       expect(short.size).to be > 1
@@ -178,7 +178,9 @@ describe Roust do
         expect(txn.first).to match(/^\d+$/)
         expect(txn.last).to match(/^\w.*\w$/)
       end
+    end
 
+    it 'can fetch long transactions on individual tickets' do
       attrs = %w(ticket data oldvalue timetaken) +
               %w(id type field newvalue content description)
 
